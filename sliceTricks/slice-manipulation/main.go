@@ -1,4 +1,5 @@
 // you can find the tutorial here: https://go.dev/wiki/SliceTricks
+// and there is a great tutorial that visualize it: https://ueokande.github.io/go-slice-tricks
 package main
 
 import "fmt"
@@ -24,6 +25,7 @@ func main() {
 	a = append(a, b...)
 	fmt.Println(a)
 	b = make([]int, len(a))
+    // copy
 	copy(b, a)
 	fmt.Println(b)
 	// slice copy idiom: if you have to append more elements to b after the copy, maybe these could be more efficient
@@ -38,6 +40,16 @@ func main() {
 	// O(n)
 	// eg: cut the elements of index 1, 2 of a
 	a = append(a[:1], a[3:]...)
+    // cut gc
+    i, j := 1, 3
+    // 
+    n := copy(a[i:], a[j:])
+    clear(a[i+n:])
+    // you can do it manually
+    // for k, n := len(a)-j+i, len(a); k < n; k++ {
+    //     a[k] = 0
+    // }
+    a = a[:i+n]
 
 	// delete
 	// eg: delte the element of index 1
@@ -47,7 +59,7 @@ func main() {
 	fmt.Printf("array: %#v\n", a[:cap(a)])
 	fmt.Printf("slice: %#v\n", a)
 	// copy returns the number of elements copied
-	n := copy(a[1:], a[2:])
+	n = copy(a[1:], a[2:])
 	a = a[:1+n]
 	// a = a[:i+copy(a[i:], a[i+1:])]
 	fmt.Printf("array: %#v\n", a[:cap(a)])
